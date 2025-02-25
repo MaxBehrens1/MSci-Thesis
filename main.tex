@@ -1,0 +1,67 @@
+%Formatting Report
+\documentclass[12pt, a4paper]{article}
+
+% Page margins
+\usepackage[top=2.54cm, bottom=2.54cm, left=2.0cm, right=2.0cm]{geometry}
+
+% Format Citations
+\usepackage[style=ieee, backend=biber]{biblatex}
+\addbibresource{References.bib}
+\let\cite=\supercite
+
+% Stop hyphenation from one line to another
+\usepackage[none]{hyphenat}
+
+% Section title customization
+\usepackage{titlesec}
+\titleformat{\section}[block]{\normalfont\Large\bfseries}{\thesection}{1em}{}  % Larger section titles
+
+% Adjust paragraph indentation and spacing
+\setlength{\parindent}{0pt}  % No Indentation for paragraphs
+\setlength{\parskip}{0pt}     % No extra space between paragraphs
+\usepackage[skip=3pt]{parskip}
+
+%General 
+\usepackage{graphicx}
+\usepackage{accents}
+\usepackage{physics}
+\usepackage{subcaption}
+\usepackage{titlesec}
+\usepackage{xcolor}
+\usepackage{hyperref}
+  
+\begin{document}
+%Title Page
+\input{Title/title}
+
+%Preface
+\input{Preface/preface}
+
+%Abstract
+\input{Abstract/abstract}
+
+%Contents
+\begingroup
+\titleformat{\section}[block]{\Large\bfseries\filcenter}{\color{red}}{}{}
+\tableofcontents
+\vspace{24 pt}
+\endgroup
+\newpage
+
+%Introduciton
+\input{Introduction/introduction}
+
+
+%Experimental Method
+\input{ExperimentalMethod/experimentalmethod}
+
+%Results
+\input{Results and Discussion/results.tex}
+
+
+%Conclusion
+\input{Conclusion/conclusion}
+
+\printbibliography
+\addcontentsline{toc}{section}{References}
+\end{document}
