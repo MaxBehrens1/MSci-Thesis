@@ -21,9 +21,9 @@ The fibre-coupled light can be routed to a Hanbury Brown and Twiss (HBT) setup f
 
 \subsubsection{Detection Scheme}
 
-A \textcolor{red}{Teledyne Technologies spectrometer} with a \textcolor{red}{princeton instruments CCD} was uses for spectral characterisation of the emitters. The spectrometer had grating options of 150 gratings per millimeter (g/mm), 300 g/mm and 600 g/mm. The majority of the time the 300 g/mm grating was used as it provided a good balance between spectral resolution and range. This combination of slit and CCD provided a spectral range of $86.1$ nm and a resolution of $0.0842\pm0.000143$ nm. The data from the spectrometer was then visualised in the Lightfield application.
+A \textcolor{red}{Teledyne Technologies spectrometer} with a \textcolor{red}{princeton instruments CCD} was uses for spectral characterisation of the emitters. The spectrometer had grating options of 150 gratings per millimeter (g/mm), 300 g/mm and 600 g/mm. The majority of the time the 300 g/mm grating was used as it provided a good balance between spectral resolution and range. This combination of slit and CCD provided a spectral range of $86.1$ nm and a resolution of \textcolor{red}{Use Mercury lamp or mattise laser and measure FWHM.} nm. The data from the spectrometer was then visualised in the Lightfield application.
 
-\textcolor{red}{Check whether the method I used for range and resolution is correct (i.e. mean seperation and std)}
+
 
 Six fibre-coupled avalanche photodiodes (APDs) were available in the laboratory, comprising two different detector types. These detector provides a timing resolution of 35~ps (FWHM), a detection efficiency of approximately 28\% at 670~nm, an active area diameter of \textcolor{red}{X~$\mu$m}, a dark count rate of \textcolor{red}{X~Hz}, and a dead time of 77~ns. For experiments prioritising photon collection efficiency, such as second-order correlation measurements, \textcolor{red}{Thorlabs SPDMH2F} detectors were used. They offers a typical timing resolution of 1~ns, a quantum efficiency of around 70\% at 670~nm, a 100~$\mu$m active area diameter, a maximum dark count rate of 100~Hz, and a dead time of 45~ns.
 
@@ -116,7 +116,7 @@ By multiplying the appropriate sequence of matrices, the evolution of the beam t
 
 The program first fits the measured beam profiles from both the laser and fibre collimator to equation~\ref{eqn:beam-radius}, extracting the beam waist $w_0$ and Rayleigh range $z_R$ for each. It then performs a numerical optimisation to minimise the mean squared error (MSE) between the calculated beam profile (after passing through the two-lens system) and the experimentally measured fibre-collimated beam profile. This optimisation is implemented using \texttt{scipy.optimize.minimize}, subject to the following constraints: (1) a minimum allowable distance between the laser head and the first lens, accounting for any fixed optical elements in the path, and (2) the known distance between the laser and the fibre collimator. To ensure a global minimum is found, the optimisation is repeated 100 times with randomly initialised parameters, and the configuration yielding the lowest MSE is retained.
 
-The script evaluates this optimisation across all valid combinations of lenses provided as input, with focal lengths specified by the user. The final output is the lens pair and corresponding positions that yield the closest match to the target fibre-collimated beam profile, thereby maximising the expected coupling efficiency. An example result of the optimisation process is shown in Fig.~\ref{fig:optimised-telescope}.
+The script evaluates this optimisation across all valid combinations of lenses provided as input, with focal lengths specified by the user. The final output is the lens pair and corresponding positions that yield the closest match to the target fibre-collimated beam profile, thereby maximising the expected coupling efficiency. An example result of the optimisation process is shown in Fig.~\ref{fig:optimised-telescope}. The coupled light has an error of \textcolor{red}{XXX in $z_R$ and XXX in $\omega_0$}
 
 \begin{figure}[h]
     \centering
@@ -222,6 +222,8 @@ and the bi-exponential form is:
     \label{eqn:bi-decay-g2}
 \end{equation}
 
+\textcolor{red}{blinking - a phenomelological 3rd non-rad decay state}
+
 where $A$ is the baseline offset, $B$ and $C$ are the amplitudes of the respective decay components, and $t_0$ and $t_1$ are the associated decay time constants. For an ideal two-level emitter, the single-exponential model is sufficient. However, in hBN-based single-photon emitters, competing recombination pathways can result in more complex population dynamics. In such cases, a bi-exponential model is required to accurately fit the $g^{(2)}(\tau)$ curve and capture these additional relaxation channels.
 
 The zero-delay value, $g^{(2)}(0)$, is obtained by normalising the coincidence counts at $\tau = 0$ to the baseline at large time delays, i.e. $g^{(2)}(0) = g^{(2)}(0)/g^{(2)}(\infty)$. For the bi-exponential model, this is calculated as $(A + B + C)/A$, and for the single-exponential model, it simplifies to $(A + B)/A$.
@@ -238,7 +240,104 @@ When the two interferometer arms are equal in length ($\tau = 0$), the wavepacke
     V = \frac{I_\text{max} - I_\text{min}}{I_\text{max} + I_\text{min}},
 \end{equation}
 
-where $I_\text{max}$ and $I_\text{min}$ are the maximum and minimum intensities of the interference fringes. At zero time delay, perfect phase coherence yields $V = 1$ in theory. However, if one arm of the interferometer is moved by several hundred femtoseconds, the visibility $V$ decreases due to pure dephasing of the photon wavepacket. The range over which interference persists defines the emitter's pure dephasing time, $T_2^*$. By measuring visibility at multiple optical path differences, an exponential decay in $V(\tau)$ is typically observed, from which $T_2^*$ can be extracted.
+where $I_\text{max}$ and $I_\text{min}$ are the maximum and minimum intensities of the interference fringes. At zero time delay, perfect phase coherence yields a theoretical visibility $V = 1$. However, if one arm of the interferometer is displaced, by say a several hundred femtoseconds, the visibility $V$ decreases due to pure dephasing of the photon wavepacket. This behaviour can be understood by considering how a pure single-photon state evolves as it passes through a Michelson interferometer.
+
+A pure (perfectly indistinguishable) single-photon can be described as~\textcolor{red}{[reference]}:
+
+\begin{equation}
+\begin{aligned}
+    \ket{1} & = -i\int_{-\infty}^{\infty} dt\, \sqrt{\gamma} e^{-\frac{t}{2}(\gamma+2i\omega_0)} \Theta(t) \hat{a}^{\dagger}(t) \ket{0}, \\
+    & = \int_{-\infty}^{\infty} dt f(t) \hat{a}^{\dagger}(t) \ket{0},
+    \label{eqn:wavepacket}
+\end{aligned}
+\end{equation}
+
+where $\gamma$ is the spontaneous decay rate of the emitter, $\omega_0$ is the central frequency of the single-photon wavepacket, $\Theta(t)$ is the Heaviside step function (ensuring only positive times are considered), and $\hat{a}^{\dagger}(t)$ is the time-dependent photon creation operator in the Fock basis. 
+
+In the presence of pure dephasing at rate $\gamma^*$, the input photon density matrix is modified as:
+
+
+\begin{equation}
+    \rho_{in} = \int_{-\infty}^{\infty}\int_{-\infty}^{\infty}dt \ dt' f(t)f^*(t') \hat{a}^{\dagger}(t) \ket{0} \bra{0} \hat{a}(t) e^{-\gamma^*|t-t'|}.
+\end{equation}
+
+To model the evolution of this state through a Michelson interferometer, it is convenient to consider the topologically equivalent case of a Mach–Zehnder interferometer with one delayed arm, as illustrated in Fig.~\ref{fig:MachZhenderMichelson}.
+
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\linewidth]{Figures/MachZhenderMichelson.png}
+    \caption{Equivilance of a Mach Zhender interferometer with time delay $\tau$ and a Michelson interferometer. They are both topoligically equivilent, and an analysis of the Mach-Zhender is performed for ease.}
+    \label{fig:MachZhenderMichelson}
+\end{figure}
+
+Using standard beam splitter conventions~\textcolor{red}{[insert reference]}, the field operators evolve as:
+
+
+\begin{align}
+    \hat{a}(t) & \rightarrow \frac{1}{\sqrt{2}}\left(\hat{b}(t) + \hat{c}(t) \right) \label{eqn:MZ1}\\
+    \hat{b}(t) & \rightarrow \hat{b}(t-\tau) \label{eqn:MZ2}\\
+    \hat{b}(t-\tau) & \rightarrow \frac{1}{\sqrt{2}}\left(\hat{e}(t-\tau) + \hat{d}(t-\tau) \right) \label{eqn:MZ3}\\
+    \hat{c}(t) & \rightarrow \frac{1}{\sqrt2} \left( \hat{e}(t)-\hat{d}(t)\right) \label{eqn:MZ4}
+\end{align}
+
+Applying these transformations, the output density matrix becomes:
+
+\begin{equation}
+\begin{aligned}
+    \rho_{out} = \int_{-\infty}^{\infty}\int_{-\infty}^{\infty}dt \ dt' f(t)f^*(t') e^{-\gamma^*|t-t'|} \times \\ 
+    \left[\hat{d}^{\dagger}(t)+\hat{d}^{\dagger}(t-\tau)-\hat{e}^{\dagger}(t) + \hat{e}^{\dagger}(t-\tau)\right]
+    \ket{0} \bra{0} \times \\
+    \left[\hat{d}(t)+\hat{d}(t-\tau)-\hat{e}(t) + \hat{e}(t-\tau)\right],
+\end{aligned}
+\end{equation}
+
+The photon intensity measured at output port $\hat{d}(t)$ is given by:
+
+\begin{equation}
+\begin{aligned}
+    N_d(t'') 
+    &= \langle \hat{d}^{\dagger}(t'') \hat{d}(t'') \rangle 
+    = \text{Tr}\left[\hat{\rho}_{out} \, \hat{d}^{\dagger}(t'') \hat{d}(t'')\right] \\
+    &= \int_{-\infty}^{\infty} \int_{-\infty}^{\infty} dt \, dt' \, f(t) f e^{-\gamma^*|t - t'|} \\
+    &\quad \times \text{Tr} \Big[ 
+        \left( \hat{d}^{\dagger}(t) + \hat{d}^{\dagger}(t - \tau) 
+              - \hat{e}^{\dagger}(t) + \hat{e}^{\dagger}(t - \tau) \right) 
+        \ket{0} \bra{0} \\
+    &\hspace{1.7cm}
+         \left( \hat{d}(t) + \hat{d}(t - \tau) 
+              - \hat{e}(t) + \hat{e}(t - \tau) \right)
+        \hat{d}^{\dagger}(t'') \hat{d}(t'') 
+    \Big] \\
+    &= \int_{-\infty}^{\infty} \int_{-\infty}^{\infty} dt \, dt' \, f(t) f^*(t') e^{-\gamma^*|t - t'|} \\
+    &\quad \times \big[ 
+        \delta(t - t'') \delta(t' - t'') 
+        + \delta(t - \tau - t'') \delta(t' - t'') \\
+    &\qquad 
+        + \delta(t - t'') \delta(t' - \tau - t'') 
+        + \delta(t - \tau - t'') \delta(t' - \tau - t'') 
+    \big] \\
+    &= |f(t'')|^2 + |f(\tau+t'')|^2 + 2\text{Re}\left[f(t'')f^*(\tau+t'')e^{-\gamma^* \tau } \right]\\
+\end{aligned}
+\end{equation}
+
+For the wavepacket described in equation~\ref{eqn:wavepacket}, this results in:
+
+\begin{equation}
+    N_d(t'') = \frac{\gamma}{4} e^{-\gamma t''} \left[\Theta(t'') + \Theta(t'' - \tau) e^{-\gamma \tau} + 2 \cos(\omega_0 \tau)\, e^{-\gamma t'' - \gamma^* \tau} \Theta(t'') \Theta(t'' - \tau) \right].
+\end{equation}
+
+Integrating over all time gives the total photon number at detector $\hat{d}$:
+
+\begin{equation}
+\begin{aligned}
+    N_d &= \int_{-\infty}^{\infty} dt''\, N_d(t'') \\
+        &= \frac{1}{2} \left(1 + e^{-\frac{1}{2}(\gamma + 2\gamma^*) \tau} \cos(\omega_0 \tau) \right) \\
+        &= \frac{1}{2} \left(1 + e^{-\frac{1}{2} \Gamma \tau} \cos(\omega_0 \tau) \right),
+\end{aligned}
+\end{equation}
+
+This result shows that the measured intensity at the output oscillates with frequency $\omega_0$ and decays exponentially with delay $\tau$ due to the combined effect of spontaneous emission and pure dephasing. The envelope of this decay gives direct access to the emitter’s coherence properties and allows extraction of the dephasing rate $\gamma^*$.
 
 To perform the measurement, the piezo actuator is driven with a triangular waveform between 0.5~V and 9.5~V at a repetition rate of 10~Hz, generated by a \textcolor{red}{[INSERT waveform generator model]}. A synchronised CMOS trigger output from the same generator is used to start the QuTag TCSPC system. The interference signal at the output of the interferometer is coupled into a single-mode fibre and detected using a Thorlabs APD. Photon arrival times are recorded relative to the trigger signal, with the delay $\tau$ assumed to vary linearly over the piezo scan range. To access longer delays, the motorised translation stage is repositioned to introduce a new optical path difference, and the measurement is repeated.
 
@@ -282,7 +381,9 @@ The DBR mirrors were fabricated at Universität Würzburg, where the atomic forc
 
 \subsubsection{DBR Layer Pair Optimisation via Simulation}
 
-The number of layer pairs on the top and bottom mirror dictates the Q-factor of the resulting cavity. The Q-factor
+The number of DBR layers on the top and bottom mirrors of the cavity must be chosen carefully in order to optimise the Purcell factor of the system. 
+
+The Q-factor of the cavity is defined as the $\lambda_{\text{cav}}/\Gamma$, where $\lambda_{\text{cav}}$ is the central wavelength of the cavity, and $\Gamma$ is the FWHM of the cavities reflectivity curve.
 
 
 
