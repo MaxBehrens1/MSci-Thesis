@@ -2,12 +2,11 @@
 \documentclass[12pt, a4paper]{article}
 
 % Page margins
-\usepackage[top=2.54cm, bottom=2.54cm, left=3.0cm, right=3.0cm]{geometry}
+\usepackage[top=2.54cm, bottom=2.54cm, left=2cm, right=2cm]{geometry}
 
 % Format Citations
 \usepackage[style=phys, backend=biber]{biblatex}
 \addbibresource{References.bib}
-\let\cite=\supercite
 
 % Section title customization
 \usepackage{titlesec}
@@ -18,15 +17,40 @@
 \setlength{\parskip}{0pt}     % No extra space between paragraphs
 \usepackage[skip=3pt]{parskip}
 
+
+
+%word count commands:
+\newcommand{\detailtexcount}[1]{%
+  \immediate\write18{texcount -merge -sum -q #1.tex output.bbl > #1.wcdetail }%
+  \verbatiminput{#1.wcdetail}%
+}
+
+\newcommand{\quickwordcount}[1]{%
+  \immediate\write18{texcount -1 -sum -merge -q #1.tex output.bbl > #1-words.sum }%
+  \input{#1-words.sum} words%
+}
+
+\newcommand{\quickcharcount}[1]{%
+  \immediate\write18{texcount -1 -sum -merge -char -q #1.tex output.bbl > #1-chars.sum }%
+  \input{#1-chars.sum} characters (not including spaces)%
+}
+
+
+
+% Change caption font size
+\usepackage{caption}
+\DeclareCaptionFont{tenpt}{\fontsize{10}{12}\selectfont}
+\captionsetup[figure]{font=tenpt}
+
 %General 
 \usepackage{graphicx}
-\usepackage{accents}
-\usepackage{physics}
+\usepackage{braket}
 \usepackage{subcaption}
 \usepackage{titlesec}
 \usepackage{xcolor}
 \usepackage{hyperref}
 \usepackage{array}
+\usepackage{amsmath}
   
 \begin{document}
 %Title Page
@@ -35,9 +59,6 @@
 %Preface
 \input{Preface/preface}
 
-%Abstract
-\input{Abstract/abstract}
-
 %Contents
 \begingroup
 \titleformat{\section}[block]{\Large\bfseries\filcenter}{\color{red}}{}{}
@@ -45,6 +66,9 @@
 \vspace{24 pt}
 \endgroup
 \newpage
+
+%Abstract
+\input{Abstract/abstract}
 
 %Introduciton
 \input{Introduction/introduction}
@@ -59,6 +83,9 @@
 
 %Conclusion
 \input{Conclusion/conclusion}
+
+%Appendix
+\input{Appendix/appendix}
 
 \printbibliography
 \addcontentsline{toc}{section}{References}
